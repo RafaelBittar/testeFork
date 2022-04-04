@@ -8,14 +8,14 @@ init: docker-compose.yml .env;
 	cp ./config/script/payara/*.sh ${PAYARA_LOCAL_DIR}/bin/; \
 	sudo chmod -R 777 ${PAYARA_LOCAL_DIR}; \
 	echo -e "\nConvertendo caracteres de fim de linha...\n"; \
-	docker exec -it hostel-app-gcva_hostel-app-server_1 bash convert_endline_character.sh; \
+	docker exec -it hostel-app-server bash convert_endline_character.sh; \
 	echo -e "\nPronto!\n"; \
 
 #Configurar jdbc connector e connection pool
 payara_config:
-	docker exec -it hostel-app-gcva_hostel-app-server_1 bash mysql_connection.sh; \
+	docker exec -it hostel-app-server bash mysql_connection.sh; \
 	echo "\nReiniciando servidor...\n"; \
-	docker container restart hostel-app-gcva_hostel-app-server_1; \
+	docker container restart hostel-app-server; \
 
 #Apenas para instanciar containers
 run: docker-compose.yml;
@@ -30,7 +30,7 @@ build_backend: ;
 
 build_frontend: ;
 	@echo -e "\nBuild 'frontend' project maven...\n"; \
-	mvn --file ./frontend/pom.xml clean package; \
+	mvn --file ./pom.xml clean package; \
 	echo -e "\nPronto!\n"; \
 
 #Deployment
@@ -39,7 +39,7 @@ build_frontend: ;
 deploy_frontend: build_frontend;
 	@echo -e "\nRealizando deploy 'frontend' em Payara Server Container\n"; \
 	cp ./frontend/target/frontend-1.0-SNAPSHOT.war ${PAYARA_LOCAL_DIR}/deployments/frontend.war; \
-	docker exec -it hostel-app-gcva_hostel-app-server_1 bash deploy_frontend_script.sh; \
+	docker exec -it hostel-app-server bash deploy_frontend_script.sh; \
 	echo -e "\nProcesso de deployment concluído com sucesso.\nAcesse a aplicação em http://localhost:8080/frontend"; \
 	echo -e "\nPronto!\n"; \
 
@@ -47,7 +47,7 @@ deploy_frontend: build_frontend;
 deploy_backend: build_backend;
 	@echo -e "\nRealizando deploy 'backend' em Payara Server Container\n"; \
 	cp ./backend/target/backend-1.0-SNAPSHOT.war ${PAYARA_LOCAL_DIR}/deployments/backend.war; \
-	docker exec -it hostel-app-gcva_hostel-app-server_1 bash deploy_backend_script.sh; \
+	docker exec -it hostel-app-server bash deploy_backend_script.sh; \
 	echo -e "\nProcesso de deployment concluído com sucesso.\nAcesse a aplicação em http://localhost:8080/backend"; \
 	echo -e "\nPronto!\n"; \
 
