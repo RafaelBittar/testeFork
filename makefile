@@ -61,7 +61,7 @@ deploy_all: deploy_frontend deploy_backend;
 redeploy_frontend: build_frontend;
 	@echo -e "\nRealizando redeploy 'frontend' em Payara Server Container\n"; \
 	cp ./frontend/target/frontend-1.0-SNAPSHOT.war ${PAYARA_LOCAL_DIR}/deployments/frontend.war; \
-	docker exec -it hostel-app-gcva_hostel-app-server_1 bash redeploy_frontend_script.sh; \
+	docker exec -it hostel-app-server bash redeploy_frontend_script.sh; \
 	echo -e "\nProcesso de redeployment concluído com sucesso.\nAcesse a aplicação em http://localhost:8080/frontend"; \
 	echo -e "\nPronto!\n"; \
 
@@ -69,7 +69,7 @@ redeploy_frontend: build_frontend;
 redeploy_backend: build_backend;
 	@echo -e "\nRealizando redeploy 'backend' em Payara Server Container\n"; \
 	cp ./backend/target/backend-1.0-SNAPSHOT.war ${PAYARA_LOCAL_DIR}/deployments/backend.war; \
-	docker exec -it hostel-app-gcva_hostel-app-server_1 bash redeploy_backend_script.sh; \
+	docker exec -it hostel-app-server bash redeploy_backend_script.sh; \
 	echo -e "\nProcesso de redeployment concluído com sucesso.\nAcesse a aplicação em http://localhost:8080/backend"; \
 	echo -e "\nPronto!\n"; \
 
@@ -83,7 +83,7 @@ drop: docker-compose.yml .env docker;
 	echo -e "\n Removendo container's...\n"; \
 	docker-compose rm -f; \
 	echo -e "\n Removendo docker volume: mysql-data...\n"; \
-	docker volume rm -f hostel-app-gcva_mysql-data; \
+	docker volume rm -f hostel-app-database; \
 	rm -rf docker; \
 	echo -e "\nPronto!\n"; \
 
